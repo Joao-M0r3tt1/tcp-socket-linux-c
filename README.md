@@ -4,7 +4,7 @@
 
 This is a project to create a `TCP server` and a `TCP client` and perform a simple pre-defined message exchange between them, and here are (so far) some notes on how it was developed.
 
-<img height="100" width="100" alt="Photo TCP Protocol" src="https://media.geeksforgeeks.org/wp-content/uploads/20220330131350/StatediagramforserverandclientmodelofSocketdrawio2-448x660.png">
+<img align="center" height="300" width="200" alt="Photo TCP Protocol" src="https://media.geeksforgeeks.org/wp-content/uploads/20220330131350/StatediagramforserverandclientmodelofSocketdrawio2-448x660.png">
 
 ## Techs
 
