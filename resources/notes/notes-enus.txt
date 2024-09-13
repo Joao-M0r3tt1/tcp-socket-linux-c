@@ -1,0 +1,139 @@
+----- `Socket` programming in C
+
+    - a way to `connect two nodes` in a `network` to `communicate with each other`.
+    - one `socket (node)` listens on a specific `PORT` on an `IP`, while the other `socket (node)` searches/reaches for what it is listening on to form a connection.
+
+--- When creating a `client-server` connection using the `TCP` (Transmission Control Protocol)` protocol:
+    - Note: TCP is a communication protocol that allows the exchange of messages between programs and computing devices on a network. One of the main protocols of the Internet and is part of the `TCP/IP` protocol suite.
+
+    1. suitable for applications that require high reliability;
+    2. transmission time is relatively less critical;
+    3. congestion control;
+    4. error checking and error recovery;
+    5. rearranges data in the specified order;
+    6. ensures that transferred data remains intact and arrives in the same order in which it was sent;
+    7. performs flow control and requires 3 packets to set up the socket connection before any user data is sent;
+    8. used by other protocols such as `HTTP`, `HTTPs`, `FTP`, `SMTP`, `Telnet`.
+
+################################################################################################################################################################
+
+--- Socket 1: TCP Client
+    - objective: connect to a web server through a specific port
+    - test: send the HEAD command and print the server's response (in this case, the server header, which is sent as a response)
+
+    - Step by step:
+        1. connect to a web server - (in this case, the domain below and port 80 were used):
+            `nc www.google.se 80`
+
+        2. send an http header - HEAD command (checks the headers of the referenced web server - the response will only be the header)
+            `HEAD / HTTP/1.0`
+
+        note: press `ENTER twice`
+
+(image of the command line: ../assets/client01.png)
+
+    - Note: when we send an `HTTP Request` we get a header and then the data.
+
+
+--- Create a source code in `C programming language` to send a request to a web server:
+
+    socket
+        - ​​usually an `IP` connection
+        - connects to a server somewhere on the Internet or on the local network and sends data
+        - We will make: TCP connection on port 80 (http - used for clear text communication on the web)
+
+    - Step by step:
+        1. get the `IP address` of the web server - (in this case the web server will be: www.google.se 'or any other')
+            `host www.google.se` or
+            `nslookup www.google.se` or
+            `ping www.google.se`
+
+        2. create the file: `sockets-client.c` - (in this case the `vim` editor was used)
+            `vim sockets-client.c`
+
+(image of the source code: ../assets/client03.png)
+
+
+--- Implement the source code of the `sockets-client.c` file to communicate with the server that will be created in the source code of `sockets-server.c` file:
+
+    - Step by step:
+        1. modify the connection `IP address`
+            `0.0.0.0` or `127.0.0.1`
+
+        2. modify the connection `port`
+            `8181`
+
+        3. customize the message that will be sent
+            `Hello from server` or other
+
+(image of the source code: ../assets/client04.png)
+
+- Compilation:
+    1. compile the source code
+        `gcc sockets-client.c -o sockets-client`
+
+    2. run the executable file
+        `./sockets-client`
+
+(command line image: ../assets/client02.png)
+
+
+- Necessary functions:
+    - initialize the socket --> socket();
+    - fill the socket structure --> servaddr; (ip address, port, address family);
+    - connect to the server --> connetc();
+    - write - send data/request --> write();
+    - read - receive data/response --> read();
+    - close the connection/close the socket --> close();
+
+################################################################################################################################################################
+
+--- Sockets 2: TCP server
+    - objective: listen to a TCP port and when a connection is established, send a predefined message and finally close the program
+
+--- Create a source code in `C programming language` to be the server:
+
+    - Step by step:
+        1. create the file: `sockets-server.c` - (in this case the `vim` editor was used)
+            `vim sockets-server.c`
+
+        2. establish the connection port
+            `8181`
+
+        3. bind the server to localhost
+            `0` or `INADDR_ANY`
+
+
+- Compilation:
+    1. compile the source code
+        `gcc sockets-server.c -o sockets-server`
+
+    2. run the executable file
+        `./sockets-server`
+
+
+- Necessary functions:
+    - initialize the socket --> socket();
+    - fill the socket structure --> srv; (0 - 'we are listening on all ip addresses'; port; address family);
+    - bind to a client (bind the socket structure to the server address and port) --> bind();
+    - listen to a TCP port (wait for an incoming connection from the client) --> listen();
+    - connection established. Creates a new connected socket and returns a new file descriptor for that socket --> accept();
+    - read - receive data/request --> read();
+    - write - send data/response --> write();
+    - close the connection/close the socket --> close();
+
+################################################################################################################################################################
+
+--- Test the `client-server` connection:
+
+    - Terminal A:
+        1. run the `sockets-server` file
+            `./sockets-server`
+
+(command line image: ../assets/exec01.png)
+
+    - Terminal B:
+        1. run the `sockets-client` file
+            `./sockets-client`
+
+(command line image: ../assets/exec02.png)

@@ -1,0 +1,139 @@
+----- Programação de `socket` em C
+
+	- uma meneira de `conectar dois nós` em uma `rede` para `comunicarem entre si`. 
+	- um `socket (nó)` escuta em uma `PORTA` específica em um `IP`, enquanto o outro `socket (nó)` procura/alcança o que está escutando para formar uma conexão.
+
+--- Ao criar uma conexão `cliente - servidor` usando o protocolo `TCP (Transmission Control Protocol)`:
+	- Obs.: TCP é um protocolo de comunicação que permite a troca de menagens entre programas e dispositivos de computação em uma rede. Um dos principais protocolos da Internet e é parte do conjunto de protocolos `TCP/IP`.
+
+	1. adequado para aplicações que exigem alta confiabilidade;
+	2. tempo de transmissão é relativamente menos crítico;
+	3. controle de congestionamento;
+	4. verificação de erros e recuperação de erros;
+	5. reorganiza os dados na ordem especificada;
+	6. garante que os dados transferidos permaneçam intáctos e cheguem na mesma ordem em que foram enviados;
+	7. faz Controle de fluxo e requer 3 pacotes para configurar a conexão de socket antes que quaisquer dados do usuário sejam enviados;
+	8. usado por outros protocolos como `HTTP`, `HTTPs`, `FTP`, `SMTP`, `Telnet`.
+
+################################################################################################################################################################
+
+--- Socket 1: TCP Cliente
+	- objetivo: conectar-se a um servidor web através de uma porta específica
+	- teste: enviar o comando HEAD e imprimir a respota do servidor (nesse caso, o cabeçalho do servidor, que é enviado como resposta)
+
+	- Passo a passo:
+		1. conectar-se a um srvidor web - (nesse casso foi utilizado o domínio abaixo e a porta 80):
+			`nc www.google.se 80`
+
+		2. enviar um cabeçalho http - comando HEAD (verifica os cabeçalhos do servidor web referenciado - resposta será apenas o cabeçalho)
+			`HEAD / HTTP/1.0`
+
+			obs.: aperte `ENTER 2x`
+
+(imagem da linha de comando: ../assets/client01.png)
+
+	- Obs.: quando enviamos uma `Solicitação HTTP` obtemos um cabeçalho e depois os dados. 
+
+
+--- Criar um código fonte em `linguagem de programação C` para enviar uma solicitação a um servidor web:
+	
+	socket
+		- normalmente é uma conexão `IP`
+		- conecta-se a um servidor em algum local da Internet ou na rede local e envia dados 
+		- Faremos: conexão TCP na porta 80 (http - usado p/ comunicação de texto não criptografado na web)
+
+	- Passo a passo:
+		1. obter o `endereço IP` do servidor web - (nesse caso servidor web será: www.google.se 'ou qualquer outro') 
+			`host www.google.se` ou
+			`nslookup www.google.se` ou
+			`ping www.google.se`
+
+		2. criar o arquivo: `sockets-client.c` - (nesse caso foi utilizado o editor `vim`)
+			`vim sockets-client.c`
+
+(imagem do código fonte: ../assets/client03.png)
+
+
+--- Implementar o código fonte do arquivo `sockets-client.c` para se comunicar com o servidor que será criado no código fonte do arquivo `sockets-server.c`:
+
+	- Passo a passo:
+		1. modificar o `endereço IP` de conexão 
+			`0.0.0.0` ou `127.0.0.1`
+		
+		2. modificar a `porta` de conexão
+			`8181`
+
+		3. customizar a mensagem que será enviada
+			`Hello from server` ou outra
+
+(imagem do código fonte: ../assets/client04.png)
+
+- Compilação:
+		1. compilar o código fonte	
+			`gcc sockets-client.c -o sockets-client`
+
+		2. executar o arquivo executável
+			`./sockets-client`
+
+(imagem da linha de comando: ../assets/client02.png)
+
+
+- Funções necesárias:
+	- inicializar o socket --> socket();
+	- preencher a estrutura de socket --> servaddr; (ip address, port, address family);
+	- conectar ao servidor --> connetc();
+	- escrever - enviar dados/solicitação --> write();
+	- ler - receber dados/reposta --> read();
+	- encerrar a conexão/fechar o socket --> close();
+
+################################################################################################################################################################
+
+--- Sockets 2: TCP servidor
+	- objetivo: ouvir uma porta TCP e quando for estabelecida uma conexão, enviar uma mensagem predefinida e por fim encerrar o programa
+
+--- Criar um código fonte em `linguagem de programação C` para ser o servidor:
+	
+	- Passo a passo: 
+		1. criar o arquivo: `sockets-server.c` - (nesse caso foi utilizado o editor `vim`)
+			`vim sockets-server.c`
+
+		2. estabelecer a porta de conexão
+			`8181`
+
+		3. vincular o servidor ao localhost
+			`0` or `INADDR_ANY`
+
+
+- Compilação:
+		1. compilar o código fonte	
+			`gcc sockets-server.c -o sockets-server`
+
+		2. executar o arquivo executável
+			`./sockets-server`
+
+
+- Funções necesárias:
+	- inicializar o socket --> socket();
+	- preencher a estutura de socket --> srv; (0 - 'estamos ouvindo todos os endereços ip'; port; address family);
+	- vincular a um cliente (vincular a estrutura de socket ao endereço e porta do ervidor) --> bind();
+	- escutar uma porta TCP (espera por uma conexão de entrada por parte do cliente) --> listen();
+	- conexão estabelecida. Cria um novo socket conectado e retorna um novo descritor de arquivo referente a esse socket --> accept();
+	- ler - receber dados/solicitação --> read();
+	- escrever - enviar dados/resposta --> write();
+	- encerrar a conexão/fechar o socket --> close();
+
+################################################################################################################################################################
+
+--- Testar a conexão `cliente - servidor`: 
+
+	- Terminal A:
+		1. executar o arquivo `sockets-server`
+			`./sockets-server`
+
+(imagem da linha de comando: ../assets/exec01.png)
+
+	- Terminal B: 
+		1. executar o arquivo `sockets-client`
+			`./sockets-client`
+
+(imagem da linha de comando: ../assets/exec02.png)
